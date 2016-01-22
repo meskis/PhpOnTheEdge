@@ -9,7 +9,7 @@ vagrantfile:
         chosen_provider: virtualbox
         box_version: ''
         network:
-            private_network: 192.168.56.101
+            private_network: 192.168.56.124
             forwarded_port:
                 vflnp_ayqr5cx9w0er:
                     host: '9579'
@@ -113,16 +113,13 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_4aj602heszim:
+        sandbox_vhost:
             server_name: sandbox.dev
             server_aliases:
                 - www.sandbox.dev
-            www_root: /var/www/source/web
+            www_root: /var/www/web
             listen_port: '80'
-            index_files:
-                - index.html
-                - index.htm
-                - index.php
+            index_files: []
             client_max_body_size: 1m
             ssl: '0'
             ssl_cert: ''
@@ -133,33 +130,38 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_uei8oi7ynh04:
+                direct_file_serving:
                     location: /
                     autoindex: 'off'
                     internal: 'false'
                     try_files:
                         - $uri
-                        - $uri/
-                        - /index.php$is_args$args
+                        - /app.php$is_args$args
                     fastcgi: ''
                     fastcgi_index: ''
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_cpa100vgwi3x:
-                    location: '~ \.php$'
-                    autoindex: 'off'
-                    internal: 'false'
-                    try_files:
-                        - $uri
-                        - $uri/
-                        - /index.php$is_args$args
-                    fastcgi: '127.0.0.1:9000'
-                    fastcgi_index: index.php
+                dev_env:
+                    location: '~ ^/(app_dev|config)\.php(/|$)'
                     fastcgi_split_path: '^(.+\.php)(/.*)$'
                     fast_cgi_params_extra:
-                        - 'SCRIPT_FILENAME $request_filename'
-                        - 'APP_ENV dev'
+                        - 'SCRIPT_FILENAME $realpath_root$fastcgi_script_name'
+                        - 'DOCUMENT_ROOT $realpath_root'
+                    autoindex: 'off'
+                    internal: 'false'
+                    fastcgi: '127.0.0.1:9000'
+                    proxy: ''
+                    proxy_redirect: ''
+                prod_env:
+                    location: '~ ^/app\.php(/|$)'
+                    autoindex: 'off'
+                    internal: 'true'
+                    fastcgi: '127.0.0.1:9000'
+                    fastcgi_split_path: '^(.+\.php)(/.*)$'
+                    fast_cgi_params_extra:
+                        - 'SCRIPT_FILENAME $realpath_root$fastcgi_script_name'
+                        - 'DOCUMENT_ROOT $realpath_root'
                     set:
                         - '$path_info $fastcgi_path_info'
                     proxy: ''
