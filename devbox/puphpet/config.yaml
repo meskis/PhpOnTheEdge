@@ -36,7 +36,7 @@ vagrantfile:
         synced_folder:
             vflsf_vm0nxilo3uoh:
                 source: ../source
-                target: /var/www
+                target: /var/www/sandbox
                 sync_type: nfs
                 smb:
                     smb_host: ''
@@ -117,7 +117,7 @@ nginx:
             server_name: sandbox.dev
             server_aliases:
                 - www.sandbox.dev
-            www_root: /var/www/web
+            www_root: /var/www/sandbox/web
             listen_port: '80'
             index_files: []
             client_max_body_size: 1m
