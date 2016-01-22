@@ -226,7 +226,6 @@ php:
             - intl
             - mcrypt
             - curl
-            - imagick
             - memcached
         pear: {  }
         pecl: {  }
